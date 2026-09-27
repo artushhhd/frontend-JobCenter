@@ -1,0 +1,117 @@
+@layer components {
+  .settings-tabs {
+    @apply mt-6 flex flex-wrap items-center gap-2 border-b border-slate-200 pb-3;
+  }
+
+  .settings-tab {
+    @apply rounded-lg px-3.5 py-2 text-sm font-semibold text-slate-500 transition hover:bg-slate-100;
+  }
+
+  .settings-tab-active {
+    @apply bg-indigo-50 text-indigo-700 hover:bg-indigo-50;
+  }
+
+  .settings-count {
+    @apply ml-auto text-sm text-slate-500;
+  }
+
+  .settings-filter {
+    @apply mt-5 flex flex-wrap items-center gap-3;
+  }
+
+  .settings-filter-field {
+    @apply flex flex-1 items-center gap-2.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 transition focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/15;
+  }
+
+  .settings-filter-input {
+    @apply w-full border-0 bg-transparent text-[15px] text-slate-900 outline-none placeholder:text-slate-400;
+  }
+
+  .settings-panel {
+    @apply mt-6;
+  }
+
+  .settings-note {
+    @apply min-h-5 text-sm font-medium text-slate-600;
+  }
+
+  .settings-table {
+    @apply w-full border-separate border-spacing-0 text-left text-sm;
+  }
+
+  .settings-table th {
+    @apply border-b border-slate-200 px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-slate-400;
+  }
+
+  .settings-table td {
+    @apply border-b border-slate-100 px-3 py-3 align-middle text-slate-700;
+  }
+
+  .settings-table tbody tr:hover {
+    @apply bg-slate-50/70;
+  }
+
+  .settings-account {
+    @apply flex items-center gap-2.5;
+  }
+
+  .settings-account-text {
+    @apply flex flex-col;
+  }
+
+  .settings-account-name {
+    @apply font-semibold text-slate-900;
+  }
+
+  .settings-account-email {
+    @apply text-xs text-slate-500;
+  }
+
+  .settings-job-title {
+    @apply block font-semibold text-slate-900;
+  }
+
+  .settings-job-company {
+    @apply block text-xs text-slate-500;
+  }
+
+  .settings-status {
+    @apply inline-block rounded-md px-2 py-1 text-xs font-semibold uppercase;
+  }
+
+  .settings-status-published {
+    @apply bg-emerald-50 text-emerald-700;
+  }
+
+  .settings-status-draft {
+    @apply bg-amber-50 text-amber-700;
+  }
+
+  .settings-actions {
+    @apply whitespace-nowrap text-right;
+  }
+
+  .settings-muted {
+    @apply text-xs text-slate-400;
+  }
+
+  .settings-ghost {
+    @apply rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 disabled:opacity-60;
+  }
+
+  .settings-ghost-danger {
+    @apply text-rose-600 hover:border-rose-200 hover:bg-rose-50;
+  }
+
+  .settings-danger {
+    @apply rounded-lg bg-rose-600 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-rose-700 disabled:opacity-60;
+  }
+
+  .settings-modal {
+    @apply mt-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-xl;
+  }
+
+  .settings-modal-head {
+    @apply mb-4 flex items-center justify-between gap-3;
+  }
+}
