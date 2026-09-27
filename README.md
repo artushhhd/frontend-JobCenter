@@ -1,36 +1,189 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# JobCenter Frontend
 
-## Getting Started
+Next.js frontend for JobCenter, connected to the JobCenter Laravel REST API.
 
-First, run the development server:
+## Stack
+
+- Next.js 16
+- React 19
+- JavaScript
+- Tailwind CSS 4
+- Laravel Sanctum bearer-token authentication
+
+## Features
+
+- Registration and login
+- Job seeker and recruiter account flows
+- Job marketplace with search and sorting
+- Recruiter job creation with draft/publish workflow
+- Job likes
+- Job discussions/comments
+- Profile and private CV management
+- Staff settings for jobs and users
+- Responsive UI
+- Client-side validation with server-side API validation as the source of truth
+
+## Project structure
+
+```text
+app/
+├── AddJob/
+├── Jobs/
+├── Likes/
+├── Login/
+├── Profile/
+├── Register/
+└── Settings/
+
+components/
+├── AppHeader.jsx
+├── JobCard.jsx
+├── JobComments.jsx
+├── JobForm.jsx
+├── JobLikeButton.jsx
+└── ...
+
+hooks/
+├── useComments.js
+├── useJobs.js
+├── useProfile.js
+└── useUsers.js
+
+lib/
+├── api.js
+├── jobs.js
+├── labels.js
+├── permissions.js
+└── validation.js
+```
+
+## Requirements
+
+- Node.js 20+ recommended
+- npm
+
+## Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/artushhhd/frontend-JobCenter.git
+cd frontend-JobCenter
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Create the environment file:
+
+```bash
+copy .env.example .env.local
+```
+
+Set the Laravel API URL:
+
+```text
+NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
+```
+
+The frontend intentionally does not hard-code the backend URL. Configure it through `NEXT_PUBLIC_API_URL`.
+
+## Development
+
+Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```text
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Production
 
-## Learn More
+Build:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Start:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm start
+```
 
-## Deploy on Vercel
+Lint:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run lint
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Authentication
+
+The frontend stores the Sanctum personal access token in browser `localStorage` under the `jobcenter_token` key.
+
+Authenticated requests send:
+
+```http
+Authorization: Bearer <token>
+Accept: application/json
+```
+
+The backend remains responsible for the real authorization checks. Frontend permission helpers only control navigation and UI visibility.
+
+## API integration
+
+All HTTP communication is centralized in `lib/api.js`.
+
+The client provides methods for:
+
+- authentication
+- profile and CV operations
+- jobs
+- likes
+- comments
+- staff job management
+- staff user management
+
+The frontend expects the Laravel API to be available under `NEXT_PUBLIC_API_URL`.
+
+## Routes
+
+| Route | Purpose |
+|---|---|
+| `/Login` | Sign in |
+| `/Register` | Create an account |
+| `/Profile` | Current user profile |
+| `/Jobs` | Job marketplace |
+| `/AddJob` | Recruiter job creation |
+| `/Likes` | Liked jobs |
+| `/Settings` | Staff management |
+
+## Environment
+
+Required:
+
+```text
+NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
+```
+
+Do not commit `.env.local` or other files containing environment-specific secrets.
+
+## Backend
+
+This frontend is designed to work with:
+
+https://github.com/artushhhd/backend-JobCenter
+
+Start the Laravel API first, configure its CORS `FRONTEND_URL`, then start this application.
+
+## License
+
+This project is licensed under the MIT License.
