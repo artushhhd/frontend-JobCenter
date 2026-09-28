@@ -5,7 +5,7 @@ import { api } from "@/lib/api";
 
 export default function useJobs(filters, source = "jobs") {
   const [result, setResult] = useState({ jobs: [], total: 0, lastPage: 1 });
-  const [loading, setLoading] = useState(true);
+  const [settledFor, setSettledFor] = useState(null);
   const [error, setError] = useState("");
   const [nonce, setNonce] = useState(0);
 
@@ -13,14 +13,12 @@ export default function useJobs(filters, source = "jobs") {
 
   useEffect(() => {
     if (!filters) {
-      setLoading(false);
       return undefined;
     }
 
     let active = true;
     const firstPage = filters.page === 1;
 
-    setLoading(true);
     api[source](filters)
       .then((data) => {
         if (!active) return;
@@ -35,7 +33,7 @@ export default function useJobs(filters, source = "jobs") {
         if (active) setError(err.message || "Failed to load jobs.");
       })
       .finally(() => {
-        if (active) setLoading(false);
+        if (active) setSettledFor(filters);
       });
 
     return () => {
@@ -45,7 +43,7 @@ export default function useJobs(filters, source = "jobs") {
 
   return {
     ...result,
-    loading,
+    loading: Boolean(filters) && settledFor !== filters,
     error,
     hasMore: filters ? filters.page < result.lastPage : false,
     reload,

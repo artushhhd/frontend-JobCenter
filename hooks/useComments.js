@@ -8,14 +8,14 @@ export default function useComments(jobId) {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
-  const [loading, setLoading] = useState(true);
+  const [settledFor, setSettledFor] = useState(null);
   const [error, setError] = useState("");
+  const requestKey = `${jobId}:${page}`;
 
   useEffect(() => {
     let active = true;
     const firstPage = page === 1;
 
-    setLoading(true);
     api
       .comments(jobId, { page })
       .then((data) => {
@@ -29,13 +29,13 @@ export default function useComments(jobId) {
         if (active) setError(err.message || "Failed to load comments.");
       })
       .finally(() => {
-        if (active) setLoading(false);
+        if (active) setSettledFor(requestKey);
       });
 
     return () => {
       active = false;
     };
-  }, [jobId, page]);
+  }, [jobId, page, requestKey]);
 
   const addComment = useCallback(
     async (body) => {
@@ -61,7 +61,7 @@ export default function useComments(jobId) {
   return {
     comments,
     total,
-    loading,
+    loading: settledFor !== requestKey,
     error,
     hasMore: page < lastPage,
     showMore: () => setPage((previous) => previous + 1),

@@ -5,7 +5,7 @@ import { api } from "@/lib/api";
 
 export default function useUsers(filters) {
   const [result, setResult] = useState({ users: [], total: 0, lastPage: 1 });
-  const [loading, setLoading] = useState(true);
+  const [settledFor, setSettledFor] = useState(null);
   const [error, setError] = useState("");
   const [nonce, setNonce] = useState(0);
 
@@ -13,14 +13,12 @@ export default function useUsers(filters) {
 
   useEffect(() => {
     if (!filters) {
-      setLoading(false);
       return undefined;
     }
 
     let active = true;
     const firstPage = filters.page === 1;
 
-    setLoading(true);
     api
       .adminUsers(filters)
       .then((data) => {
@@ -36,7 +34,7 @@ export default function useUsers(filters) {
         if (active) setError(err.message || "Failed to load users.");
       })
       .finally(() => {
-        if (active) setLoading(false);
+        if (active) setSettledFor(filters);
       });
 
     return () => {
@@ -46,7 +44,7 @@ export default function useUsers(filters) {
 
   return {
     ...result,
-    loading,
+    loading: Boolean(filters) && settledFor !== filters,
     error,
     hasMore: filters ? filters.page < result.lastPage : false,
     reload,
