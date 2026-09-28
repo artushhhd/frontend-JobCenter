@@ -26,11 +26,6 @@ export default function useProfile() {
       })
       .catch((err) => {
         if (!active) return;
-        if (err.status === 401) {
-          clearToken();
-          router.replace("/Login");
-          return;
-        }
         setError(err.message || "Failed to load your profile.");
         setLoading(false);
       });
@@ -38,7 +33,7 @@ export default function useProfile() {
     return () => {
       active = false;
     };
-  }, [router, nonce]);
+  }, [nonce]);
 
   const signOut = useCallback(async () => {
     setSigningOut(true);
