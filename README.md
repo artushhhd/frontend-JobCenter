@@ -1,189 +1,63 @@
-# JobCenter Frontend
+# JobCenter frontend
 
-Next.js frontend for JobCenter, connected to the JobCenter Laravel REST API.
+Next.js 16 (App Router) client for the JobCenter API — https://github.com/artushhhd/backend-JobCenter.
+Plain JavaScript, React 19, Tailwind 4. No UI kit, no data-fetching library.
 
-## Stack
-
-- Next.js 16
-- React 19
-- JavaScript
-- Tailwind CSS 4
-- Laravel Sanctum bearer-token authentication
-
-## Features
-
-- Registration and login
-- Job seeker and recruiter account flows
-- Job marketplace with search and sorting
-- Recruiter job creation with draft/publish workflow
-- Job likes
-- Job discussions/comments
-- Profile and private CV management
-- Staff settings for jobs and users
-- Responsive UI
-- Client-side validation with server-side API validation as the source of truth
-
-## Project structure
-
-```text
-app/
-├── AddJob/
-├── Jobs/
-├── Likes/
-├── Login/
-├── Profile/
-├── Register/
-└── Settings/
-
-components/
-├── AppHeader.jsx
-├── JobCard.jsx
-├── JobComments.jsx
-├── JobForm.jsx
-├── JobLikeButton.jsx
-└── ...
-
-hooks/
-├── useComments.js
-├── useJobs.js
-├── useProfile.js
-└── useUsers.js
-
-lib/
-├── api.js
-├── jobs.js
-├── labels.js
-├── permissions.js
-└── validation.js
-```
-
-## Requirements
-
-- Node.js 20+ recommended
-- npm
-
-## Installation
-
-Clone the repository:
-
-```bash
-git clone https://github.com/artushhhd/frontend-JobCenter.git
-cd frontend-JobCenter
-```
-
-Install dependencies:
+## Running it
 
 ```bash
 npm install
-```
-
-Create the environment file:
-
-```bash
 copy .env.example .env.local
-```
-
-Set the Laravel API URL:
-
-```text
-NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
-```
-
-The frontend intentionally does not hard-code the backend URL. Configure it through `NEXT_PUBLIC_API_URL`.
-
-## Development
-
-Start the development server:
-
-```bash
 npm run dev
 ```
 
-Open:
+`.env.local` needs one variable, the address of the Laravel server:
 
-```text
-http://localhost:3000
 ```
-
-## Production
-
-Build:
-
-```bash
-npm run build
-```
-
-Start:
-
-```bash
-npm start
-```
-
-Lint:
-
-```bash
-npm run lint
-```
-
-## Authentication
-
-The frontend stores the Sanctum personal access token in browser `localStorage` under the `jobcenter_token` key.
-
-Authenticated requests send:
-
-```http
-Authorization: Bearer <token>
-Accept: application/json
-```
-
-The backend remains responsible for the real authorization checks. Frontend permission helpers only control navigation and UI visibility.
-
-## API integration
-
-All HTTP communication is centralized in `lib/api.js`.
-
-The client provides methods for:
-
-- authentication
-- profile and CV operations
-- jobs
-- likes
-- comments
-- staff job management
-- staff user management
-
-The frontend expects the Laravel API to be available under `NEXT_PUBLIC_API_URL`.
-
-## Routes
-
-| Route | Purpose |
-|---|---|
-| `/Login` | Sign in |
-| `/Register` | Create an account |
-| `/Profile` | Current user profile |
-| `/Jobs` | Job marketplace |
-| `/AddJob` | Recruiter job creation |
-| `/Likes` | Liked jobs |
-| `/Settings` | Staff management |
-
-## Environment
-
-Required:
-
-```text
 NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
 ```
 
-Do not commit `.env.local` or other files containing environment-specific secrets.
+Without it every request fails on the client with "NEXT_PUBLIC_API_URL is not configured."
+and nothing is sent. Restart `npm run dev` after changing the file — Next reads it once at
+startup. Start the API first and make sure its `FRONTEND_URL` allows the origin you open
+(`http://localhost:3000` or `http://127.0.0.1:3000`), otherwise the browser blocks the
+responses on CORS.
 
-## Backend
+`npm run build` compiles the pages, `npm run lint` runs eslint with `eslint-config-next`.
 
-This frontend is designed to work with:
+## Pages
 
-https://github.com/artushhhd/backend-JobCenter
+| Path | Who sees it |
+|---|---|
+| `/` | landing with links to login and register |
+| `/Register` | public, picks job seeker or job poster |
+| `/Login` | public |
+| `/Jobs` | signed in — search, sort, comments under a card |
+| `/AddJob` | job posters, drafts and publish |
+| `/Likes` | saved jobs |
+| `/Profile` | own data, resume upload for job seekers |
+| `/Settings` | moderator and above — jobs and accounts |
 
-Start the Laravel API first, configure its CORS `FRONTEND_URL`, then start this application.
+## How it talks to the API
 
-## License
+`lib/api.js` is the only place that does `fetch`. It attaches the bearer token, turns a non
+2xx answer into an `ApiError` that keeps the backend `errors` object, and on 401 clears the
+token and sends the visitor to `/Login` (except on the auth pages, where the message is
+just shown). The token itself sits in `localStorage` under `jobcenter_token`.
 
-This project is licensed under the MIT License.
+Data loading lives in `hooks/`: `useProfile`, `useJobs` (also used by `/Likes` and the
+staff lists), `useComments`, `useUsers`. They all append pages on "show more" instead of
+replacing the list, and each one ignores responses from a request it already abandoned.
+
+Server answers stay the source of truth: `lib/validation.js` only mirrors the Form Request
+rules so an obvious mistake does not cost a round trip. `lib/permissions.js` decides which
+menu items and buttons to render, but the API re-checks everything anyway.
+
+## Layout
+
+```
+app/          routes and one css file per page
+components/   header, job card, job form, comments thread, settings tables
+hooks/        fetching
+lib/          api client, filters, labels, permissions, validation
+```
