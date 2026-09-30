@@ -1,63 +1,165 @@
-# JobCenter frontend
+# JobCenter Frontend
 
-Next.js 16 (App Router) client for the JobCenter API — https://github.com/artushhhd/backend-JobCenter.
-Plain JavaScript, React 19, Tailwind 4. No UI kit, no data-fetching library.
+Next.js 16 frontend for the JobCenter REST API.
 
-## Running it
+**Backend:** https://github.com/artushhhd/backend-JobCenter
+
+## Overview
+
+JobCenter is a full-stack job board with separate Laravel and Next.js applications. This repository contains the frontend application responsible for the user interface, client-side state, API communication, validation feedback, and role-aware navigation.
+
+The frontend is written in plain JavaScript and uses the Next.js App Router.
+
+## Tech Stack
+
+- Next.js 16
+- React 19
+- JavaScript
+- Tailwind CSS 4
+- Native Fetch API
+- Laravel Sanctum
+
+## Core Features
+
+### Authentication
+
+- Registration and login
+- Bearer-token authentication
+- Persistent authenticated sessions
+- Automatic handling of expired/invalid authentication
+- Profile management
+
+### Job Board
+
+- Browse published jobs
+- Search and filtering
+- Sorting
+- Pagination with incremental loading
+- Job details
+- Create and edit job listings for job posters
+- Save jobs with likes
+
+### Comments
+
+- View paginated comments
+- Add comments
+- Edit and delete owned comments
+- Role-aware controls
+
+### Profile & CV
+
+- View profile data
+- Upload a CV
+- Replace the current CV
+- Download or delete the current CV
+
+### Staff Area
+
+- Job management
+- User management
+- Role-aware navigation and actions
+
+Frontend permissions control what is displayed in the UI, while the Laravel API remains the source of truth for authorization.
+
+## API Integration
+
+All HTTP communication is centralized in:
+
+```text
+lib/api.js
+```
+
+The API client handles:
+
+- Base URL configuration
+- Bearer-token authentication
+- JSON and FormData requests
+- Non-2xx responses
+- Structured validation errors
+- `401 Unauthorized` handling
+- Token cleanup and redirect behavior
+
+The backend URL is configured through an environment variable:
+
+```env
+NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
+```
+
+The value is intentionally not hardcoded across the application.
+
+## Application Structure
+
+```text
+app/
+components/
+hooks/
+lib/
+```
+
+| Directory | Responsibility |
+|---|---|
+| `app/` | Routes and page-level UI |
+| `components/` | Reusable interface components |
+| `hooks/` | Data loading and client-side behavior |
+| `lib/` | API client, validation, filters, labels, and permissions |
+
+The data hooks include profile, jobs, comments, and users. Paginated responses can be appended incrementally, and abandoned requests are ignored to prevent stale responses from updating the UI.
+
+## Routes
+
+| Route | Access |
+|---|---|
+| `/` | Public landing page |
+| `/Register` | Public |
+| `/Login` | Public |
+| `/Jobs` | Authenticated users |
+| `/AddJob` | Job posters |
+| `/Likes` | Authenticated users |
+| `/Profile` | Authenticated users |
+| `/Settings` | Moderator and above |
+
+## Local Development
+
+### Requirements
+
+- Node.js
+- npm
+- Running JobCenter Laravel API
+
+### Installation
 
 ```bash
 npm install
 copy .env.example .env.local
-npm run dev
 ```
 
-`.env.local` needs one variable, the address of the Laravel server:
+Configure:
 
-```
+```env
 NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
 ```
 
-Without it every request fails on the client with "NEXT_PUBLIC_API_URL is not configured."
-and nothing is sent. Restart `npm run dev` after changing the file — Next reads it once at
-startup. Start the API first and make sure its `FRONTEND_URL` allows the origin you open
-(`http://localhost:3000` or `http://127.0.0.1:3000`), otherwise the browser blocks the
-responses on CORS.
+Start the development server:
 
-`npm run build` compiles the pages, `npm run lint` runs eslint with `eslint-config-next`.
-
-## Pages
-
-| Path | Who sees it |
-|---|---|
-| `/` | landing with links to login and register |
-| `/Register` | public, picks job seeker or job poster |
-| `/Login` | public |
-| `/Jobs` | signed in — search, sort, comments under a card |
-| `/AddJob` | job posters, drafts and publish |
-| `/Likes` | saved jobs |
-| `/Profile` | own data, resume upload for job seekers |
-| `/Settings` | moderator and above — jobs and accounts |
-
-## How it talks to the API
-
-`lib/api.js` is the only place that does `fetch`. It attaches the bearer token, turns a non
-2xx answer into an `ApiError` that keeps the backend `errors` object, and on 401 clears the
-token and sends the visitor to `/Login` (except on the auth pages, where the message is
-just shown). The token itself sits in `localStorage` under `jobcenter_token`.
-
-Data loading lives in `hooks/`: `useProfile`, `useJobs` (also used by `/Likes` and the
-staff lists), `useComments`, `useUsers`. They all append pages on "show more" instead of
-replacing the list, and each one ignores responses from a request it already abandoned.
-
-Server answers stay the source of truth: `lib/validation.js` only mirrors the Form Request
-rules so an obvious mistake does not cost a round trip. `lib/permissions.js` decides which
-menu items and buttons to render, but the API re-checks everything anyway.
-
-## Layout
-
+```bash
+npm run dev
 ```
-app/          routes and one css file per page
-components/   header, job card, job form, comments thread, settings tables
-hooks/        fetching
-lib/          api client, filters, labels, permissions, validation
+
+Open:
+
+```text
+http://localhost:3000
 ```
+
+### Quality Checks
+
+```bash
+npm run lint
+npm run build
+```
+
+Make sure the Laravel API is running and its CORS configuration allows the frontend origin.
+
+## Architecture Notes
+
+The project keeps API communication in one client, separates data loading into hooks, and keeps backend authorization authoritative. Client-side validation mirrors backend rules to provide faster feedback without treating the frontend as a security boundary.
