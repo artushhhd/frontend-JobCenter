@@ -1,14 +1,17 @@
 # JobCenter Frontend
 
-Next.js 16 frontend for the JobCenter REST API.
+Next.js 16 client for the [JobCenter REST API](https://github.com/artushhhd/backend-JobCenter).
 
-**Backend:** https://github.com/artushhhd/backend-JobCenter
+## What this project demonstrates
 
-## Overview
-
-JobCenter is a full-stack job board with separate Laravel and Next.js applications. This repository contains the frontend application responsible for the user interface, client-side state, API communication, validation feedback, and role-aware navigation.
-
-The frontend is written in plain JavaScript and uses the Next.js App Router.
+- Next.js App Router with plain JavaScript
+- Centralized API communication
+- Bearer-token authentication
+- Role-aware navigation
+- Search, filtering, sorting, and pagination
+- Comments, likes, profile, and CV flows
+- Backend-driven authorization with frontend UX guards
+- Structured handling of API validation and authentication errors
 
 ## Tech Stack
 
@@ -19,139 +22,84 @@ The frontend is written in plain JavaScript and uses the Next.js App Router.
 - Native Fetch API
 - Laravel Sanctum
 
-## Core Features
+## Application Areas
 
-### Authentication
+| Area | Responsibility |
+|---|---|
+| Authentication | Registration, login, session/token handling |
+| Jobs | Browse, search, filter, sort, paginate, create/edit |
+| Social | Likes and paginated comments |
+| Profile | User data and CV management |
+| Staff | Role-aware job and user management |
 
-- Registration and login
-- Bearer-token authentication
-- Persistent authenticated sessions
-- Automatic handling of expired/invalid authentication
-- Profile management
+The frontend controls presentation and user experience. **Laravel remains the security boundary and source of truth for authorization.**
 
-### Job Board
-
-- Browse published jobs
-- Search and filtering
-- Sorting
-- Pagination with incremental loading
-- Job details
-- Create and edit job listings for job posters
-- Save jobs with likes
-
-### Comments
-
-- View paginated comments
-- Add comments
-- Edit and delete owned comments
-- Role-aware controls
-
-### Profile & CV
-
-- View profile data
-- Upload a CV
-- Replace the current CV
-- Download or delete the current CV
-
-### Staff Area
-
-- Job management
-- User management
-- Role-aware navigation and actions
-
-Frontend permissions control what is displayed in the UI, while the Laravel API remains the source of truth for authorization.
-
-## Screenshots
-
-The screenshots below show the main user flows of the JobCenter frontend.
-
-### Authentication
-
-<img width="1919" height="1079" alt="Register" src="https://github.com/user-attachments/assets/c96eb5cf-242c-4f0f-abdb-24c06e43531d" />
-
-<img width="1919" height="1079" alt="Login" src="https://github.com/user-attachments/assets/c5a0cead-70af-4247-955a-0a8c6e49f665" />
-
-### Profile
-
-<img width="1900" height="909" alt="Profile" src="https://github.com/user-attachments/assets/0d9f5dc8-e200-4c77-b178-83beb9976c79" />
-
-### Job Details
-
-<img width="1901" height="1079" alt="Job details" src="https://github.com/user-attachments/assets/cb65d2e9-4fe7-4950-a14c-c6f56ee5e9e0" />
-
-
-<img width="1918" height="1079" alt="like" src="https://github.com/user-attachments/assets/c0e998ac-cf6d-438a-9a0e-92107c3f1180" />
-
-<img width="1892" height="914" alt="image" src="https://github.com/user-attachments/assets/26b1fac6-c6c9-4cd7-94c4-706cf5d967e5" />
-
-<img width="1897" height="901" alt="image" src="https://github.com/user-attachments/assets/0cedbea8-cc60-4b80-a7eb-23e0eee32857" />
-
-<img width="1896" height="908" alt="image" src="https://github.com/user-attachments/assets/0b68a763-98fa-494b-9411-0c1a97dfafb9" />
-
-<img width="1898" height="916" alt="image" src="https://github.com/user-attachments/assets/9b812446-ad04-4059-8b23-5b8420f8174d" />
-
-
-
-
-
-**Backend repository:** https://github.com/artushhhd/backend-JobCenter
-
-## API Integration
+## API Client
 
 All HTTP communication is centralized in:
 
-```text
+~~~text
 lib/api.js
-```
+~~~
 
-The API client handles:
+It is responsible for:
 
-- Base URL configuration
-- Bearer-token authentication
+- API base URL configuration
+- Bearer-token headers
 - JSON and FormData requests
-- Non-2xx responses
+- Non-2xx response handling
 - Structured validation errors
-- `401 Unauthorized` handling
+- 401 Unauthorized handling
 - Token cleanup and redirect behavior
 
-The backend URL is configured through an environment variable:
+Configure the backend URL with:
 
-```env
+~~~env
 NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
-```
+~~~
 
-The value is intentionally not hardcoded across the application.
+The URL is not duplicated throughout the application.
 
 ## Application Structure
 
-```text
+~~~text
 app/
 components/
 hooks/
 lib/
-```
+~~~
 
 | Directory | Responsibility |
 |---|---|
-| `app/` | Routes and page-level UI |
-| `components/` | Reusable interface components |
-| `hooks/` | Data loading and client-side behavior |
-| `lib/` | API client, validation, filters, labels, and permissions |
+| app/ | Routes and page-level UI |
+| components/ | Reusable UI |
+| hooks/ | Data loading and client-side behavior |
+| lib/ | API client, validation, filters, labels, permissions |
 
-The data hooks include profile, jobs, comments, and users. Paginated responses can be appended incrementally, and abandoned requests are ignored to prevent stale responses from updating the UI.
+Data hooks cover jobs, comments, profile, and users. Paginated data can be appended incrementally, while abandoned requests are prevented from overwriting newer UI state.
 
 ## Routes
 
 | Route | Access |
 |---|---|
-| `/` | Public landing page |
-| `/Register` | Public |
-| `/Login` | Public |
-| `/Jobs` | Authenticated users |
-| `/AddJob` | Job posters |
-| `/Likes` | Authenticated users |
-| `/Profile` | Authenticated users |
-| `/Settings` | Moderator and above |
+| / | Public |
+| /Register | Public |
+| /Login | Public |
+| /Jobs | Authenticated |
+| /AddJob | Job posters |
+| /Likes | Authenticated |
+| /Profile | Authenticated |
+| /Settings | Moderator and above |
+
+## Screenshots
+
+<img width="1919" height="1079" alt="Register" src="https://github.com/user-attachments/assets/c96eb5cf-242c-4f0f-abdb-24c06e43531d" />
+
+<img width="1919" height="1079" alt="Login" src="https://github.com/user-attachments/assets/c5a0cead-70af-4247-955a-0a8c6e49f665" />
+
+<img width="1900" height="909" alt="Profile" src="https://github.com/user-attachments/assets/0d9f5dc8-e200-4c77-b178-83beb9976c79" />
+
+<img width="1901" height="1079" alt="Job details" src="https://github.com/user-attachments/assets/cb65d2e9-4fe7-4950-a14c-c6f56ee5e9e0" />
 
 ## Local Development
 
@@ -163,38 +111,50 @@ The data hooks include profile, jobs, comments, and users. Paginated responses c
 
 ### Installation
 
-```bash
+~~~bash
 npm install
 copy .env.example .env.local
-```
+~~~
 
-Configure:
+Set:
 
-```env
+~~~env
 NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
-```
+~~~
 
-Start the development server:
+Run:
 
-```bash
+~~~bash
 npm run dev
-```
+~~~
 
-Open:
-
-```text
-http://localhost:3000
-```
+Open http://localhost:3000.
 
 ### Quality Checks
 
-```bash
+~~~bash
 npm run lint
 npm run build
-```
+~~~
 
-Make sure the Laravel API is running and its CORS configuration allows the frontend origin.
+## Architecture
 
-## Architecture Notes
+~~~text
+Next.js App Router
+      |
+      +-- Pages / Components
+      +-- Hooks
+      +-- lib/api.js
+              |
+              | HTTP / JSON / FormData
+              v
+       Laravel REST API
+              |
+              +-- Authentication + Authorization
+~~~
 
-The project keeps API communication in one client, separates data loading into hooks, and keeps backend authorization authoritative. Client-side validation mirrors backend rules to provide faster feedback without treating the frontend as a security boundary.
+The separation keeps frontend and backend independently testable and deployable.
+
+## Related Repository
+
+**Laravel backend:** https://github.com/artushhhd/backend-JobCenter
