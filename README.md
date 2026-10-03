@@ -79,6 +79,21 @@ The screenshots below show the main user flows of the JobCenter frontend.
 
 <img width="1901" height="1079" alt="Job details" src="https://github.com/user-attachments/assets/cb65d2e9-4fe7-4950-a14c-c6f56ee5e9e0" />
 
+
+<img width="1918" height="1079" alt="like" src="https://github.com/user-attachments/assets/c0e998ac-cf6d-438a-9a0e-92107c3f1180" />
+
+<img width="1892" height="914" alt="image" src="https://github.com/user-attachments/assets/26b1fac6-c6c9-4cd7-94c4-706cf5d967e5" />
+
+<img width="1897" height="901" alt="image" src="https://github.com/user-attachments/assets/0cedbea8-cc60-4b80-a7eb-23e0eee32857" />
+
+<img width="1896" height="908" alt="image" src="https://github.com/user-attachments/assets/0b68a763-98fa-494b-9411-0c1a97dfafb9" />
+
+<img width="1898" height="916" alt="image" src="https://github.com/user-attachments/assets/9b812446-ad04-4059-8b23-5b8420f8174d" />
+
+
+
+
+
 **Backend repository:** https://github.com/artushhhd/backend-JobCenter
 
 ## API Integration
