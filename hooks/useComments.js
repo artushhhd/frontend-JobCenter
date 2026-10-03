@@ -35,7 +35,7 @@ export default function useComments(jobId) {
     return () => {
       active = false;
     };
-  }, [jobId, page, requestKey]);
+  }, [jobId, page]);
 
   const addComment = useCallback(
     async (body) => {
@@ -43,18 +43,26 @@ export default function useComments(jobId) {
 
       setComments((previous) => [...previous, data.comment]);
       setTotal(data.total);
-
       return data;
     },
     [jobId]
   );
+
+  const updateComment = useCallback(async (id, body) => {
+    const data = await api.updateComment(id, { body });
+
+    setComments((previous) =>
+      previous.map((comment) => (comment.id === id ? data.comment : comment))
+    );
+
+    return data;
+  }, []);
 
   const removeComment = useCallback(async (id) => {
     const data = await api.deleteComment(id);
 
     setComments((previous) => previous.filter((comment) => comment.id !== id));
     setTotal(data.total);
-
     return data;
   }, []);
 
@@ -66,6 +74,7 @@ export default function useComments(jobId) {
     hasMore: page < lastPage,
     showMore: () => setPage((previous) => previous + 1),
     addComment,
+    updateComment,
     removeComment,
   };
 }
