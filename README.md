@@ -61,6 +61,26 @@ The frontend is written in plain JavaScript and uses the Next.js App Router.
 
 Frontend permissions control what is displayed in the UI, while the Laravel API remains the source of truth for authorization.
 
+## Screenshots
+
+The screenshots below show the main user flows of the JobCenter frontend.
+
+### Authentication
+
+<img width="1919" height="1079" alt="Register" src="https://github.com/user-attachments/assets/c96eb5cf-242c-4f0f-abdb-24c06e43531d" />
+
+<img width="1919" height="1079" alt="Login" src="https://github.com/user-attachments/assets/c5a0cead-70af-4247-955a-0a8c6e49f665" />
+
+### Profile
+
+<img width="1900" height="909" alt="Profile" src="https://github.com/user-attachments/assets/0d9f5dc8-e200-4c77-b178-83beb9976c79" />
+
+### Job Details
+
+<img width="1901" height="1079" alt="Job details" src="https://github.com/user-attachments/assets/cb65d2e9-4fe7-4950-a14c-c6f56ee5e9e0" />
+
+**Backend repository:** https://github.com/artushhhd/backend-JobCenter
+
 ## API Integration
 
 All HTTP communication is centralized in:
